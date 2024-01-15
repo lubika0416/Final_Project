@@ -1,0 +1,90 @@
+package kr.or.dduk.ams.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.dduk.ams.service.PayService;
+import kr.or.dduk.mapper.AdmissionMapper;
+import kr.or.dduk.mapper.PayMapper;
+import kr.or.dduk.vo.AdmissionChartVO;
+import kr.or.dduk.vo.PayVO;
+import kr.or.dduk.vo.ReceiptVO;
+
+@Service
+public class PayServiceImpl implements PayService{
+	
+	@Autowired
+	PayMapper payMapper;
+	
+	@Autowired
+	AdmissionMapper admissionMapper;
+	
+	
+	/**
+	 * DB에서 수납 리스트를 모두 가져옴
+	 * @return PayVOList 수납 리스트
+	 */
+	@Override
+	public List<PayVO> getPayList(){
+		return this.payMapper.getPayList();
+	}
+	
+	
+	/**
+	 * DB에 수납 테이블과 영수증 테이블을 insert시킨다
+	 * @param PayVO 수납VO
+	 * @return result 결과
+	 */
+	@Override
+	public int insertPay(PayVO payVO) {
+		
+		// 영수증 테이블 VO 설정 부분
+		ReceiptVO receiptVO = new ReceiptVO();
+		
+		// 1.진료비
+		int rctClinic = 0;
+		if(payVO.getClinicNo() != null && payVO.getClinicNo() != "") {
+			rctClinic = 3800;
+		}
+		// 2.입원료
+		int rctAdmi = 0;
+		if(payVO.getAdmiNo() != null && payVO.getAdmiNo() != "") {
+			// 입원한 날짜 * 2인실22만원, 4인실17만원, 6인실12만원
+			// 입원날짜 계산
+			AdmissionChartVO admissionChartVO = admissionMapper.getSimpleAdmissionInfo(payVO.getAdmiNo());
+			Date startDate = admissionChartVO.getAdmiIndt();
+			Date endDate = admissionChartVO.getAdmiOutdt();
+			long startDay = startDate.getTime()/(24 * 60 * 60 * 1000);
+			long endDay = endDate.getTime()/(24 * 60 * 60 * 1000);
+			
+			int admiDate =	(int)(endDay - startDay + 1);
+			
+			// 몇인실인지 가져오기
+			String firstRoomNo = admissionChartVO.getAdrmRoomno().substring(0, 1);
+			
+			// 2인실이면
+			if(firstRoomNo == "3") {
+				rctAdmi = 221400 * admiDate;
+			// 4인실이면
+			} else if(firstRoomNo == "4") {
+				rctAdmi = 171500 * admiDate;
+			// 6인실이면
+			} else {
+				rctAdmi = 124000 * admiDate;
+			}
+		}
+		// 3.식대료
+		int rctDiet = 0;
+		if(payVO.getAdmiNo() != null && payVO.getAdmiNo() != "") {
+			
+		}
+		
+		int result = 0;
+		result += this.payMapper.insertReceipt(receiptVO);
+		result += this.payMapper.insertPay(payVO);
+		return result;
+	}
+}

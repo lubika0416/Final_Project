@@ -1,0 +1,23 @@
+package kr.or.dduk.ams.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/ams")
+public class ApprovalContoroller {
+
+	/**
+	 * 결재 화면
+	 * @return approval.jsp
+	 */
+	@GetMapping("/approval")
+	public String approval() {
+		log.info("결재");
+		return "ams/approval";
+	}
+}

@@ -1,0 +1,358 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+.dduk-body-1 {
+	width: 422px;
+    height: 50%;
+}
+.icon-calendar {
+	cursor:pointer;
+	width: 24px;
+	height: 24px;
+}
+.monthpicker-date {
+	position: absolute;
+	visibility:hidden;
+}
+#workingTimeDateIcon {
+	margin-left: -652px;
+    margin-top: -7.5px;
+}
+#workingTimeDate {
+    margin-left: -792px;
+    margin-top: -20px;
+}
+</style>
+
+<link rel="stylesheet" href="/resources/css/jquery-ui.css">
+
+<div class="dduk-body-border">
+	<div class="dduk-title-area">
+		<h2>인력 현황 </h2>
+	</div>
+	<div class="dduk-row">
+		<canvas id="myChartOne"></canvas>
+	</div>
+	<div class="dduk-row">
+		<canvas id="myChartTwo"></canvas>
+	</div>	
+	<div class="dduk-row">
+		<canvas id="myChartThree"></canvas>
+	</div>
+</div>
+	
+<div class="dduk-dir-col">
+	<div class="dduk-body-border dduk-body-1">
+		<div class="dduk-title-area" style="margin-bottom: -8px;">
+			<h2 class="schedualDate">인사 이동 </h2>
+		</div>
+		<div class="dduk-row">
+			<canvas id="myChartFour"></canvas>
+		</div>
+	
+	</div>
+	
+	<div class="dduk-body-border dduk-body-1" style="margin-top: 16px;">
+		<div class="dduk-title-area" >
+			<h2>휴가 및 병가 </h2>
+		</div>
+		<div class="dduk-row">
+			<canvas id="myChartFive"></canvas>
+		</div>
+	</div>
+	
+</div>
+
+<div class="dduk-body-border">
+	<div class="dduk-title-area">
+		<h2>근무 시간</h2>
+		<img id="workingTimeDateIcon" class="icon-calendar" src="/resources/images/icons/calendar.png" alt="calendarIcon">
+		<div>
+			<input id="workingTimeDate" class="monthpicker-date" type="text" /> 
+		</div>
+	</div>
+		<canvas id="myChartSix"></canvas>
+		<canvas id="myChartSeven"></canvas>
+		<canvas id="myChartEight"></canvas>
+</div>
+
+<!-- jQuery 및 jQuery UI -->
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+
+<!-- chart.js 및 관련 종속성 -->
+<script src="/resources/script/jquery.mtz.monthpicker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  
+<script>
+$(function(){
+	workingEmpListA();
+	inOutEmpListA();
+	
+	$(document).on('click', '#workingTimeDateIcon', function(){
+		$("#workingTimeDate").monthpicker({
+			pattern: 'yyyy-mm',
+			monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			selectedYear: 2024,
+			startYear : 1990,
+			finalYear : 2100,
+			openOnFocus : true
+		});
+		
+		$("#workingTimeDate").monthpicker('show');
+	})
+	
+	$(document).on('change', '#workingTimeDate', function(){
+		alert($(this).val());
+	});
+});
+
+const myChartOne = document.getElementById('myChartOne');
+const myChartTwo = document.getElementById('myChartTwo');
+const myChartThree = document.getElementById('myChartThree');
+const myChartFour = document.getElementById('myChartFour');
+const myChartFive = document.getElementById('myChartFive');
+const myChartSix = document.getElementById('myChartSix');
+const myChartSeven = document.getElementById('myChartSeven');
+const myChartEight = document.getElementById('myChartEight');
+
+//받아올 데이터를 저장할 배열 선언
+var chartLabels = []; 
+var chartData = []; 
+
+new Chart(myChartOne, {
+	type: 'line',
+	data : {
+			labels: ['2019년', '2020년', '2021년', '2022년', '2023년'],
+			datasets: [{
+				label: '직무별 인원',
+				data: [10, 30, 12, 52, 48],
+				borderWidth: 3
+			}]
+		},
+	options: {
+		plugins: {
+			legend: { position: 'bottom' },
+            title: {
+                display: true,
+				size : 30,
+                text: '년도별 전체 직원 수+감원'
+            }
+        }
+	}
+});
+
+let lineChart = new Chart(myChartTwo, {
+	type: 'doughnut',
+	data: {
+		labels: ['의사', '간호사', '치료사', '원무과', '인사과'],
+		datasets: [{
+			label: '각 부서별 직원 분포',
+			data: [28, 10, 40, 70, 72],
+			backgroundColor: ['rgb(54, 162, 235)', 'hsla(204, 82%, 57%, 0.5)'],
+			hoverOffset: 4
+		}]
+	},
+	options: {
+		layout: {
+            padding: {
+                top: 30
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+				position: 'bottom',
+                labels: {
+                    color: 'rgb(5, 99, 13)'
+                }
+            },
+			title: {
+                display: true,
+				size : 30,
+                text: '부서별 직원 분포'
+            }
+        }
+    }
+});
+
+
+
+new Chart(document.getElementById("myChartFive"), {
+  type: 'line',
+  data: {
+    labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
+    datasets: [{ 
+        data: [86,114,106,106,107,111,133,221,783,2478],
+        label: "휴가",
+        borderColor: "#3e95cd",
+        fill: false
+      }, { 
+        data: [168,170,178,190,203,276,408,547,675,734],
+        label: "병가",
+        borderColor: "#3cba9f",
+        fill: false
+      }
+    ]
+  },
+  options: {
+	scales: {
+		x: {
+			type: 'time',
+			time: {
+				unit: 'month'
+			}
+		}
+	},
+    plugins: {
+		legend: { position: 'bottom' },
+		title: {
+			display: true,
+			text: '휴가 / 병가 사용 현황'
+		}
+	}
+  }
+});
+
+
+function workingEmpListA(){
+	$.ajax({
+		url: '/hrd/workingEmpListA',
+		dataType:'JSON',
+		success:function(rst){
+			console.log(rst);
+			
+			$.each(rst, function(k, v){
+				chartLabels.push(v.COM_DET_CODE_NM);
+				chartData.push(v.EMPLOYEE_COUNT);
+				console.log(chartLabels);
+				console.log(chartData);
+			});
+				chartData = {
+					labels: chartLabels,
+					datasets : [{
+                        label : "부서별 사원 수",
+                        backgroundColor:"#bfdaf9",
+                        borderColor: "#80b6f4",
+                        pointBorderColor: "#80b6f4",
+                        pointBackgroundColor: "#80b6f4",
+                        pointHoverBackgroundColor: "#80b6f4",
+                        pointHoverBorderColor: "#80b6f4",
+                        fill: false,
+                        borderWidth: 4,
+                        data : chartData
+                    }]
+				};
+				
+				new Chart(myChartThree, {
+					type: 'bar',
+				    data : chartData,
+					options: {
+						layout: {
+				            padding: {
+				                top: 30
+				            }
+				        },
+						scales: {
+							x: {
+								stacked : true
+							},
+							y: {
+								stacked : true
+							}
+						},
+				        plugins: {
+				            legend: {
+				                display: true,
+								position: 'bottom',
+				                labels: {
+				                    color: 'rgb(255, 99, 132)'
+				                }
+				            },
+							title: {
+				                display: true,
+								size : 30,
+				                text: '각 과 직책별 직원 수'
+				            }
+				        }
+				    }
+				});
+			
+		},
+		error: function(xhr, status, error){
+			console.log('Error:', xhr, status, error);
+		}
+	});
+}
+
+function inOutEmpListA(){
+	$.ajax({
+		url: '/hrd/inOutEmpListA',
+		dataType:'JSON',
+		success:function(rst){
+			console.log("inOutEmpListA : ", rst);
+			var chartLabels2 = []; 
+			var chartData2 = []; 
+			var chartData3 = []; 
+			$.each(rst, function(k, v){
+// 				console.log(k);
+// 				console.log(v);
+				chartLabels2.push(v.JOINYEAR);
+				chartData2.push(v.JOINEMPCOUNT);
+				//chartLabels2.push(v.OUTYEAR);
+				chartData3.push("-"+v.OUTEMPCOUNT);
+			});
+			console.log(chartLabels2);
+			console.log(chartData2);
+			console.log(chartData3);
+			
+			const barChart = document.getElementById("myChartFour").getContext('2d');
+			new Chart(barChart, {
+				type: 'bar',
+				data: {
+					labels: chartLabels,
+					datasets: [{
+						label: '입사',
+						data: chartData2,
+						backgroundColor: ['rgb(54, 162, 235)', 'hsla(204, 82%, 57%, 0.5)'],
+						borderWidth: 1
+					},{
+						label: '퇴사',
+						data: chartData3,
+						backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(255, 99, 132, 1)'],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					responsive: true,
+					plugins: {
+						legend: { position: 'top' },
+						scales: {
+							xAxes: [{
+								gridLines: {
+									offsetGridLines: false
+								}
+							}],
+							yAxes: [{
+								gridLines: {
+									offsetGridLines: true
+								}
+							}]
+						},
+			            title: {
+			                display: true,
+			                text: '년도별 입사 / 퇴사 현황'
+			            }
+			        }
+				}
+			});
+			
+		},
+		error: function(xhr, status, error){
+			console.log('Error:', xhr, status, error);
+		}
+	});
+}
+
+
+</script>

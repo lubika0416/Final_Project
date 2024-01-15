@@ -1,0 +1,72 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>통계</title>
+<style>
+</style>
+</head>
+<body>
+<!-- ========================= 지윤서  ========================= -->
+<div>
+  <canvas id="myChart1"></canvas>
+</div>
+<!-- ========================= 지윤서  ========================= -->
+
+<!-- ========================= 오다영  ========================= -->
+<div>
+  <canvas id="myChart2"></canvas>
+</div>
+<!-- ========================= 오다영  ========================= -->
+<script>
+// ========================= 지윤서 =========================
+var ctx1 = document.getElementById('myChart1');
+
+new Chart(ctx1, {
+	type : 'bar',
+	data : {
+		labels : [ 'Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange' ],
+		datasets : [ {
+			label : '# of Votes',
+			data : [ 12, 19, 3, 5, 2, 3 ],
+			borderWidth : 1
+		} ]
+	},
+	options : {
+		scales : {
+			y : {
+				beginAtZero : true
+			}
+		}
+	}
+});
+// ========================= 지윤서 =========================
+	
+// ========================= 오다영 =========================
+var ctx2 = document.getElementById('myChart2');
+
+new Chart(ctx2, {
+	type : 'bar',
+	data : {
+		labels : [ 'Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange' ],
+		datasets : [ {
+			label : '# of Votes',
+			data : [ 12, 19, 3, 5, 2, 3 ],
+			borderWidth : 1
+		} ]
+	},
+	options : {
+		scales : {
+			y : {
+				beginAtZero : true
+			}
+		}
+	}
+});
+//========================= 오다영 =========================
+</script>
+</body>
+</html>

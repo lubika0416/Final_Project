@@ -1,0 +1,33 @@
+package kr.or.dduk.ams.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.dduk.nurse.service.MedicineManagementService;
+import kr.or.dduk.vo.PurchaseMedicineVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/ams")
+public class ApprovalContoroller {
+
+	@Autowired
+	MedicineManagementService medicineManagementService;
+	/**
+	 * 결재 화면
+	 * @return approval.jsp
+	 */
+	@GetMapping("/approval")
+	public String approval(Model model) {
+		List<PurchaseMedicineVO> purchaseMedicineVOList = medicineManagementService.getAllPurchase();
+		
+		model.addAttribute(purchaseMedicineVOList);
+		return "ams/approval";
+	}
+}
