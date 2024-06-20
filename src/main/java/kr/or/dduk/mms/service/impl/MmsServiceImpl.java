@@ -25,8 +25,8 @@ public class MmsServiceImpl implements MmsService{
 	public int sendMMS(List<MmsVO> list) throws CoolsmsException {
 		System.out.println(list);
 		
-		String api_key = "NCS42FKIBPDIKGW5";
-		String api_secret = "M7JSW28ULSFPUA8TVAFI0LBXW2IVTEKO";
+		String api_key = "NCS42FK";
+		String api_secret = "MFPUA8EKO";
 		Message coolsms = new Message(api_key, api_secret);
 
 		int result = 0;
